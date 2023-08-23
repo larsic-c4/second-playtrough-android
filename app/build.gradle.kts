@@ -47,7 +47,6 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     val lifecycle_version = "2.6.1"
-    val arch_version = "2.2.0"
 
     // ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
@@ -61,4 +60,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
     // alternately - if using Java8, use the following instead of lifecycle-compiler
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycle_version")
+    constraints{
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0")
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0")
+    }
+
 }

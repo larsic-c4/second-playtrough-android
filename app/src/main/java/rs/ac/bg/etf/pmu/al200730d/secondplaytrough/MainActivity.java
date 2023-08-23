@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.pmu.al200730d.secondplaytrough;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "my-log-watcher";
     private LoginMenuBinding binding;
+    private LoginViewModel loginViewModel;
     private EditText usernameEt, passwordEt;
     private TextView loginLabel;
     private int defaultColor;
@@ -27,6 +29,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         Log.d(LOG_TAG, "onCreate() called");
+
+        loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        loginViewModel.getLoginLabel().observe(this,
+                s -> binding.loginLabel.setText(s));
+        loginViewModel.getLoginLabelColor().observe(this,
+                integer -> binding.loginLabel.setTextColor(integer));
 
         GamesDatabase database = GamesDatabase.getDatabase(this);
         usernameEt = binding.loginUsername;
@@ -42,14 +50,18 @@ public class MainActivity extends AppCompatActivity {
             String passwordHash = GamesDatabase.generateSHA256Hash(password);
             if (username.trim().isEmpty() || password.trim().isEmpty()
                     || username.length() < 4 || username.length() > 16
-                    || password.length() < 4 || password.length() > 16 ) {
+                    || password.length() < 4 || password.length() > 16) {
                 int red = getColor(R.color.red);
-                loginLabel.setTextColor(red);
-                loginLabel.setText(R.string.register_fail);
+                loginViewModel.setLoginLabel(getString(R.string.register_fail));
+                loginViewModel.setLoginLabelColor(red);
+            } else if (database.accountDao().findByUsername(username) != null) {
+                int red = getColor(R.color.red);
+                loginViewModel.setLoginLabel(getString(R.string.register_username_taken));
+                loginViewModel.setLoginLabelColor(red);
             } else {
                 database.accountDao().insert(new Account(0, username, passwordHash));
-                loginLabel.setTextColor(defaultColor);
-                loginLabel.setText(R.string.register_success);
+                loginViewModel.setLoginLabel(getString(R.string.register_success));
+                loginViewModel.setLoginLabelColor(defaultColor);
             }
         });
 
@@ -62,12 +74,12 @@ public class MainActivity extends AppCompatActivity {
                     && password.length() >= 4 && password.length() <= 16
                     && (account = database.accountDao().findByUsername(username)) != null) {
                 // we ave account
-                loginLabel.setTextColor(defaultColor);
-                loginLabel.setText(R.string.login_success);
+                loginViewModel.setLoginLabel(getString(R.string.login_success));
+                loginViewModel.setLoginLabelColor(defaultColor);
             } else {
                 int red = getColor(R.color.red);
-                loginLabel.setTextColor(red);
-                loginLabel.setText(R.string.login_fail);
+                loginViewModel.setLoginLabel(getString(R.string.login_fail));
+                loginViewModel.setLoginLabelColor(red);
             }
         });
     }

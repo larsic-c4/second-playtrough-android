@@ -1,9 +1,10 @@
 package rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity
+@Entity(indices = {@Index("id"), @Index(value = "username", unique = true)})
 public class Account {
     @PrimaryKey(autoGenerate = true)
     private long id;

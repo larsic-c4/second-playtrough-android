@@ -3,12 +3,14 @@ package rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
 @Entity(tableName = "game", foreignKeys = @ForeignKey(entity = Account.class,
-        parentColumns = "id", childColumns = "account_id", onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE))
+        parentColumns = "id", childColumns = "account_id", onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
+        indices = {@Index("account_id")})
 public class Game {
     @PrimaryKey(autoGenerate = true)
     private long id;
