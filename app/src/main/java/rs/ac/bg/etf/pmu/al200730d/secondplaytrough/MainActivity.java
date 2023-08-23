@@ -2,20 +2,20 @@ package rs.ac.bg.etf.pmu.al200730d.secondplaytrough;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.Account;
-import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.AccountDao;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.GamesDatabase;
+import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.databinding.LoginMenuBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    Activity mainActivity;
+    private static final String LOG_TAG = "my-log-watcher";
+    private LoginMenuBinding binding;
     private EditText usernameEt, passwordEt;
     private TextView loginLabel;
     private int defaultColor;
@@ -23,13 +23,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_in);
+        binding = LoginMenuBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        Log.d(LOG_TAG, "onCreate() called");
+
         GamesDatabase database = GamesDatabase.getDatabase(this);
-        usernameEt = findViewById(R.id.loginUsername);
-        passwordEt = findViewById(R.id.loginPassword);
-        loginLabel = findViewById(R.id.loginLabel);
-        registerBt = findViewById(R.id.btRegister);
-        loginBt = findViewById(R.id.btLogin);
+        usernameEt = binding.loginUsername;
+        passwordEt = binding.loginPassword;
+        loginLabel = binding.loginLabel;
+        registerBt = binding.btRegister;
+        loginBt = binding.btLogin;
         defaultColor = loginLabel.getCurrentTextColor();
 
         registerBt.setOnClickListener(view -> {
@@ -66,5 +70,35 @@ public class MainActivity extends AppCompatActivity {
                 loginLabel.setText(R.string.login_fail);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(LOG_TAG, "onStart() called");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(LOG_TAG, "onStop() called");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(LOG_TAG, "onPause() called");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG, "onResume() called");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(LOG_TAG, "onDestroy() called");
     }
 }
