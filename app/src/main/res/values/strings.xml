@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">Second Playtrough</string>
+    <string name="app_name">POCKET SOCCER</string>
+    <string name="mm_continue">Continue</string>
+    <string name="mm_new_game">New Game</string>
+    <string name="mm_statistics">Statistics</string>
+    <string name="mm_options">Options</string>
+    <string name="mm_sign_out">Sign Out</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="login">Login</string>
+    <string name="login_fail">Bad credentials!</string>
+    <string name="login_success">Login successful!</string>
+    <string name="register">Register</string>
+    <string name="register_fail">Enter username and password 4 to 16 characters long!</string>
+    <string name="register_success">Register successful!</string>
 </resources>

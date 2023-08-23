@@ -5,5 +5,5 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.SecondPlaytrough" parent="Base.Theme.SecondPlaytrough" />
+    <style name="Theme.SecondPlaythrough" parent="Base.Theme.SecondPlaytrough" />
 </resources>
