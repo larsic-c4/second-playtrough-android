@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.pmu.al200730d.secondplaytrough.mainmenu;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 
@@ -16,5 +17,10 @@ public class GamesScoreActivity extends AppCompatActivity {
         binding = ActivityGamesScoreBinding.inflate(getLayoutInflater());
 
         setContentView(binding.getRoot());
+
+        binding.recyclerView.setHasFixedSize(true);
+        binding.recyclerView.setAdapter(new GamesGroupedStatAdapter());
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 }
