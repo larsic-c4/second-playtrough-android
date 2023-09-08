@@ -1,33 +1,22 @@
 package rs.ac.bg.etf.pmu.al200730d.secondplaytrough.login;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.Date;
-
-import javax.inject.Inject;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.R;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.Account;
-import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.AppRepository;
-import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.Game;
-import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.GamesDatabase;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.LoginLifecycle;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.databinding.LoginMenuBinding;
 
@@ -45,8 +34,6 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_CAMERA_PERMISSION = 100;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private String imagePath;
-    @Inject
-    private AppRepository appRepository;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -91,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
         registerBt.setOnClickListener(view -> {
             String username = usernameEt.getText().toString();
             String password = passwordEt.getText().toString();
-            String passwordHash = GamesDatabase.generateSHA256Hash(password);
             if (username.trim().isEmpty() || username.length() < 4 || username.length() > 16) {
                 int red = getColor(R.color.red);
                 loginViewModel.setLoginLabel(getString(R.string.register_fail));
@@ -102,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.setLoginLabel(getString(R.string.register_fail));
                 loginViewModel.setLoginLabelColor(red);
                 binding.loginPasswordF.getEditText().requestFocus();
-            } else if (appRepository.findByUsername(username) != null) {
+            } else if (loginViewModel.findByUsername(username) != null) {
                 int red = getColor(R.color.red);
                 loginViewModel.setLoginLabel(getString(R.string.register_username_taken));
                 loginViewModel.setLoginLabelColor(red);
@@ -123,7 +109,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!username.trim().isEmpty() && !password.trim().isEmpty()
                     && username.length() >= 4 && username.length() <= 16
                     && password.length() >= 4 && password.length() <= 16
-                    && (account = appRepository.findByUsername(username)) != null) {
+                    && (account = loginViewModel.findByUsername(username)) != null) {
                 // we ave account
                 loginViewModel.setLoginLabel(getString(R.string.login_success));
                 loginViewModel.setLoginLabelColor(defaultColor);

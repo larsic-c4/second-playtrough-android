@@ -15,7 +15,7 @@ public class AppRepository {
         this.accountDao = accountDao;
     }
 
-    public long insert(Account account) {
+    public long insertAccount(Account account) {
         return accountDao.insert(account);
     }
 
@@ -26,6 +26,10 @@ public class AppRepository {
     public Account findByCredentials(String username, String password) {
         String passwordHash = GamesDatabase.generateSHA256Hash(password);
         return accountDao.findByCredentials(username, passwordHash);
+    }
+
+    public long insert(Game playedGame) {
+        return gameDao.insert(playedGame);
     }
 
     public List<Game> getByAccountIdOrderByPlayerName(long accountId) {
