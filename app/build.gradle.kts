@@ -1,10 +1,11 @@
 plugins {
     id("com.android.application")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "rs.ac.bg.etf.pmu.al200730d.secondplaytrough"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "rs.ac.bg.etf.pmu.al200730d.secondplaytrough"
@@ -46,10 +47,10 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    implementation("androidx.camera:camera-camera2:1.1.0")
-    implementation("androidx.camera:camera-lifecycle:1.1.0")
-    implementation("androidx.camera:camera-view:1.0.0-alpha30")
-    implementation("androidx.camera:camera-extensions:1.0.0-alpha30")
+    implementation("androidx.camera:camera-camera2:1.2.3")
+    implementation("androidx.camera:camera-lifecycle:1.2.3")
+    implementation("androidx.camera:camera-view:1.3.0-rc01")
+    implementation("androidx.camera:camera-extensions:1.3.0-rc01")
 
     val lifecycle_version = "2.6.1"
     // ViewModel
@@ -68,5 +69,14 @@ dependencies {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0")
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0")
     }
+    // Java language implementation
+    implementation("androidx.navigation:navigation-fragment:2.7.1")
+    implementation("androidx.navigation:navigation-ui:2.7.1")
+
+    implementation ("com.google.dagger:hilt-android:2.48")
+    annotationProcessor("com.google.dagger:hilt-compiler:2.48")
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    annotationProcessor("androidx.hilt:hilt-compiler:1.1.0-alpha01")
+
 
 }

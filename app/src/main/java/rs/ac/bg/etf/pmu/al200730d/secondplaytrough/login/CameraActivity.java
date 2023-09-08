@@ -1,6 +1,7 @@
 package rs.ac.bg.etf.pmu.al200730d.secondplaytrough.login;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -108,13 +109,17 @@ public class CameraActivity extends AppCompatActivity {
         File photoFile = new File(outputDirectory, fileName);
 
         ImageCapture.OutputFileOptions outputFileOptions =
-                new ImageCapture.OutputFileOptions.Builder(photoFile).build();
-
+                    new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+        final String[] imagePath = {null};
         imageCapture.takePicture(outputFileOptions, ContextCompat.getMainExecutor(this),
                 new ImageCapture.OnImageSavedCallback() {
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Log.d("CameraActivity", "Photo saved: " + photoFile.getAbsolutePath());
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("imagePath", photoFile.getAbsolutePath());
+                        setResult(RESULT_OK, resultIntent);
+                        finish();
                     }
 
                     @Override

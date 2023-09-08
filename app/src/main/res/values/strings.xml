@@ -14,4 +14,5 @@
     <string name="register_fail">Enter username and password 4 to 16 characters long!</string>
     <string name="register_success">Register successful!</string>
     <string name="register_username_taken">Username taken!</string>
+    <string name="photo_failed">Photo failed!</string>
 </resources>

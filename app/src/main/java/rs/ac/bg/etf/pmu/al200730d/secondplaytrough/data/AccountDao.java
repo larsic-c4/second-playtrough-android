@@ -13,4 +13,7 @@ public interface AccountDao {
     @Query("SELECT * FROM account WHERE username = :username")
     Account findByUsername(String username);
 
+    @Query("SELECT * FROM account WHERE username = :username AND password = :passwordHash")
+    Account findByCredentials(String username, String passwordHash);
+
 }

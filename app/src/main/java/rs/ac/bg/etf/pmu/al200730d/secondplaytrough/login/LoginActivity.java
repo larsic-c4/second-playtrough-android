@@ -1,5 +1,8 @@
 package rs.ac.bg.etf.pmu.al200730d.secondplaytrough.login;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -15,12 +18,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Date;
+
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.R;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.Account;
+import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.AppRepository;
+import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.Game;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.GamesDatabase;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.data.LoginLifecycle;
 import rs.ac.bg.etf.pmu.al200730d.secondplaytrough.databinding.LoginMenuBinding;
 
+@AndroidEntryPoint
 public class LoginActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = "my-log-watcher";
@@ -30,8 +41,12 @@ public class LoginActivity extends AppCompatActivity {
     private TextView loginLabel;
     private int defaultColor;
     private Button registerBt, loginBt;
-
+    private static final int PHOTO_TAKEN = 500;
     private static final int REQUEST_CAMERA_PERMISSION = 100;
+    private ActivityResultLauncher<Intent> cameraLauncher;
+    private String imagePath;
+    @Inject
+    private AppRepository appRepository;
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -56,13 +71,13 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "onCreate() called");
 
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
         loginViewModel.getLoginLabel().observe(this,
                 s -> binding.loginLabel.setText(s));
         loginViewModel.getLoginLabelColor().observe(this,
                 integer -> binding.loginLabel.setTextColor(integer));
         loginViewModel.initByBundle(savedInstanceState);
 
-        GamesDatabase database = GamesDatabase.getDatabase(this);
         usernameEt = binding.loginUsername;
         passwordEt = binding.loginPassword;
         loginLabel = binding.loginLabel;
@@ -70,26 +85,33 @@ public class LoginActivity extends AppCompatActivity {
         loginBt = binding.btLogin;
         defaultColor = loginLabel.getCurrentTextColor();
 
+        cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                this::onActivityResult);
+
         registerBt.setOnClickListener(view -> {
             String username = usernameEt.getText().toString();
             String password = passwordEt.getText().toString();
             String passwordHash = GamesDatabase.generateSHA256Hash(password);
-            if (username.trim().isEmpty() || password.trim().isEmpty()
-                    || username.length() < 4 || username.length() > 16
-                    || password.length() < 4 || password.length() > 16) {
+            if (username.trim().isEmpty() || username.length() < 4 || username.length() > 16) {
                 int red = getColor(R.color.red);
                 loginViewModel.setLoginLabel(getString(R.string.register_fail));
                 loginViewModel.setLoginLabelColor(red);
-            } else if (database.accountDao().findByUsername(username) != null) {
+                binding.loginUsernameF.getEditText().requestFocus();
+            } else if (password.trim().isEmpty() || password.length() < 4 || password.length() > 16) {
+                int red = getColor(R.color.red);
+                loginViewModel.setLoginLabel(getString(R.string.register_fail));
+                loginViewModel.setLoginLabelColor(red);
+                binding.loginPasswordF.getEditText().requestFocus();
+            } else if (appRepository.findByUsername(username) != null) {
                 int red = getColor(R.color.red);
                 loginViewModel.setLoginLabel(getString(R.string.register_username_taken));
                 loginViewModel.setLoginLabelColor(red);
             } else { //registration
+
                 Intent intent = new Intent(this, CameraActivity.class);
-                startActivity(intent);
-                    //database.accountDao().insert(new Account(0, username, passwordHash));
-                    loginViewModel.setLoginLabel(getString(R.string.register_success));
-                    loginViewModel.setLoginLabelColor(defaultColor);
+                cameraLauncher.launch(intent);
+                //imagepath
+                //appRepository.insert(new Account(0, username, passwordHash));
 
             }
         });
@@ -101,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
             if (!username.trim().isEmpty() && !password.trim().isEmpty()
                     && username.length() >= 4 && username.length() <= 16
                     && password.length() >= 4 && password.length() <= 16
-                    && (account = database.accountDao().findByUsername(username)) != null) {
+                    && (account = appRepository.findByUsername(username)) != null) {
                 // we ave account
                 loginViewModel.setLoginLabel(getString(R.string.login_success));
                 loginViewModel.setLoginLabelColor(defaultColor);
@@ -111,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.setLoginLabelColor(red);
             }
         });
+
     }
 
     @Override
@@ -144,4 +167,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    private void onActivityResult(ActivityResult result) {
+        if (result.getResultCode() == RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                imagePath = data.getStringExtra("imagePath");
+
+                loginViewModel.setLoginLabel(getString(R.string.register_success) + "\n" + imagePath);
+                loginViewModel.setLoginLabelColor(defaultColor);
+            } else {
+
+                int red = getColor(R.color.red);
+                loginViewModel.setLoginLabel(getString(R.string.photo_failed));
+                loginViewModel.setLoginLabelColor(red);
+            }
+        }
+    }
 }

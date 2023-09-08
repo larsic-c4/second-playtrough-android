@@ -10,11 +10,13 @@ public class Account {
     private long id;
     private String username;
     private String password;
+    private String image;
 
-    public Account(long id, String username, String password) {
+    public Account(long id, String username, String password, String image) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.image = image;
     }
 
     public long getId() {
@@ -39,5 +41,13 @@ public class Account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

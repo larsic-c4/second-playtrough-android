@@ -1,12 +1,16 @@
 package rs.ac.bg.etf.pmu.al200730d.secondplaytrough.login;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
 public class LoginViewModel extends ViewModel {
 
     public static final String LOGIN_LABEL = "login-label";
@@ -15,6 +19,10 @@ public class LoginViewModel extends ViewModel {
     public static final String LOGIN_COLOR = "login-color";
     private boolean colorValid = false;
     private MutableLiveData<Integer> loginLabelColor = new MutableLiveData<>(0);
+
+    @Inject
+    public LoginViewModel() {
+    }
 
     public void initByBundle(Bundle bundle) {
         if (bundle != null ) {
